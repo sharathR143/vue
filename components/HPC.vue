@@ -2,33 +2,34 @@
   <header class="header">
     <div class="parent justify">
       <div class="content" v-for="(user, i) in users" :key="user.HPC">
-        <div class="parent">
+        <div class="parent" >
           <!-- <aside class="server" v-for="(vm, i) in user.VM" :key="i">
             <div :class="vm.server !== '' ? 'service' : ''">
               <div>{{ vm.server ? vm.server : "" }}</div>
               <div class="vm">{{ vm.name }}</div>
             </div>
           </aside> -->
-          <aside class="server" v-for="(vm, j) in user.VM" :key="j">
+
+          <aside  class="server" v-for="(vm, j) in user.VM" :key="j">
             <div :class="vm.server !== '' ? 'service' : ''">
               <div
+               @click="alert"
                 class="server-row"
                 :data-parent-index="i"
                 :data-current-index="j"
-                draggable="true"
+                draggable="false"
                 @dragover="onDragOver($event)"
                 @drop="onDragDrop($event)"
-                @dragleave="onDragLeave($event)"
-              >
+                @dragleave="onDragLeave($event)">
                 {{ vm.server }}
               </div>
               <div class="vm">{{ vm.name }}</div>
             </div>
           </aside>
         </div>
-        <div>
+        <main>
           <h3 class="hpc">{{ user.HPC }}</h3>
-        </div>
+        </main>
       </div>
     </div>
 
@@ -37,8 +38,9 @@
     <footer class="container">
       <h2 class="container-service">Service</h2>
       <ul class="server-wrapper" v-for="server in serverdata" :key="server.id">
-        <li draggable="true" @dragstart="onDragStart($event)">
-          {{ server.server }}
+        <li draggable="true" @dragstart="onDragStart($event) ">
+        <!-- <p>periciption </p> -->
+        {{ server.server}}  
         </li>
       </ul>
     </footer>
@@ -48,12 +50,20 @@
 <script setup>
 import userData from "./user.json";
 import serverdata from "./server.json";
-import draggable from "vuedraggable";
+// import draggable from "vuedraggable";
 import { ref } from "vue";
 
 let users = ref(userData);
 let draggedElement = ref("");
 let draggedElementValue = ref("");
+
+let alert=(e)=>{
+  // e.preventDefault();
+  alert('popup..')
+
+}
+    
+
 
 const onDragStart = (e) => {
   // e.preventDefault();
@@ -74,8 +84,6 @@ const onDragLeave = (e) => {
   let dragOverElement = e.target.closest("div");
   dragOverElement.classList.remove("service-dragover");
   dragOverElement.classList.add("server-row");
-
-  // console.log("over", e.target.closest("div"));
 };
 
 const onDragDrop = (e) => {
@@ -84,80 +92,96 @@ const onDragDrop = (e) => {
   let currentIndex = droppedElement.getAttribute("data-current-index");
 
   if (droppedElement.innerText === "") {
-    users.value[Number(parentIndex)].VM[Number(currentIndex)].server =
-      draggedElementValue;
+    users.value[Number(parentIndex)].VM[Number(currentIndex)].server =draggedElementValue;
     droppedElement.classList.add("server-active");
-    draggedElement.remove();
+    // draggedElement.remove();
     droppedElement.classList.remove("service-dragover");
     droppedElement.classList.add("server-row");
   }
 };
 </script>
 
+
 <style scoped>
-/* ul {
-}
-li {
-} */
-.service-dragover {
-  border: 1px dashed green;
-}
-.server-row {
-  border: 1px dashed transparent;
-}
+
 .header {
   display: flex;
   justify-content: space-between;
-  height: auto;
+  height: 80vh;
+  /* background-color: rgb(211, 162, 162); */
+
 }
+/* .children{
+padding-top:20px;
+} */
 .parent {
+  /* background-color: chartreuse; */
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   flex-direction: row;
 }
 .justify {
+  /* background-color: blueviolet; */
   justify-content: center;
   border: 3px solid green;
   margin-top: 3%;
   padding: 40px 0px;
   width: 84%;
+  /* height: 70vh; */
 }
 .content {
   margin-right: 5px;
   margin-left: 2px;
-  margin-top: 40px;
+  margin-bottom: 100px;
+  padding-bottom: 100px;
+  /* background-color: blueviolet; */
+  /* margin-top: 0px; */
+  /* padding-top: 40px; */
+ 
+  /* background-color: cornsilk; */
 }
 .server div {
   height: 20px;
 }
 .server-active {
+  /* background-color: rgb(212, 89, 41); */
   background-color: rgb(151, 234, 151);
+  text-align: center;
+  /* padding: 5px 1px; */
+}
+.service-dragover {
+  border: 1px dashed green;
+}
+.server-row {
+  border: 1px dashed transparent;
+  margin-bottom: 5px;
 }
 /* .service {
   background-color: rgb(151, 234, 151);
   text-align: center;
 } */
 .vm {
-  margin-top: 7px;
+  /* margin-top: 2px; */
   background-color: gray;
-  padding: 5px 16px;
+  padding: 10px 16px;
+  margin-top: 6px;
+ 
+  /* margin-top: ; */
 }
 .hpc {
   background-color: rgb(240, 180, 102);
   text-align: center;
   padding: 15px;
-  margin-top: 42px;
+  margin-top: 55px;
 }
 .container {
   border: 3px solid green;
   width: 200px;
-  padding-top: 0px;
-  margin-right: 20px;
-  margin-top: 50px;
+  /* padding-top: 0px; */
+  margin-top: 42px;
 }
 .container-service {
-  padding-left: 5px;
   text-align: center;
 }
 /* .server-user {
@@ -172,16 +196,19 @@ li {
 }
 .server-wrapper li {
   list-style: none;
-  background-color: aqua;
-  padding: 5px 16px;
-  width: 30px;
-  margin-bottom: 2px;
+  background-color: rgb(151, 234, 151);
+  text-align: center;
+  padding: 6px 15px;
+  width: 100px;
+  height: auto;
+  /* margin-left: 0px; */
+  /* margin-bottom: 2px; */
   cursor: pointer;
 }
-.service-right {
-  background-color: rgb(98, 226, 98);
+/* .service-right {
+  background-color: rgb(242, 41, 19);
   text-align: center;
   padding: 2px 0px;
   width: 60px;
-}
+} */
 </style>
