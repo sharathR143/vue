@@ -2,7 +2,7 @@
   <header class="header">
     <div class="parent justify">
       <div class="content" v-for="(user, i) in users" :key="user.HPC">
-        <div class="parent" >
+        <div class="parent">
           <!-- <aside class="server" v-for="(vm, i) in user.VM" :key="i">
             <div :class="vm.server !== '' ? 'service' : ''">
               <div>{{ vm.server ? vm.server : "" }}</div>
@@ -10,22 +10,39 @@
             </div>
           </aside> -->
 
-          <aside  class="server" v-for="(vm, j) in user.VM" :key="j">
+          <div class="server" v-for="(vm, j) in user.VM" :key="j">
+            <!-- <div class="service"> -->
             <div :class="vm.server !== '' ? 'service' : ''">
               <div
-               @click="alert"
                 class="server-row"
                 :data-parent-index="i"
                 :data-current-index="j"
+                @click="vm.server !== '' ? showRemove($event) : ''"
                 draggable="false"
                 @dragover="onDragOver($event)"
                 @drop="onDragDrop($event)"
-                @dragleave="onDragLeave($event)">
+                @dragleave="onDragLeave($event)"
+              >
                 {{ vm.server }}
+                <span
+                  class="d-none remove-Button"
+                  @click="remove($event, i, j)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="15"
+                    viewBox="0 -960 960 960"
+                    width="15"
+                  >
+                    <path
+                      d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+                    />
+                  </svg>
+                </span>
               </div>
               <div class="vm">{{ vm.name }}</div>
             </div>
-          </aside>
+          </div>
         </div>
         <main>
           <h3 class="hpc">{{ user.HPC }}</h3>
@@ -38,9 +55,9 @@
     <footer class="container">
       <h2 class="container-service">Service</h2>
       <ul class="server-wrapper" v-for="server in serverdata" :key="server.id">
-        <li draggable="true" @dragstart="onDragStart($event) ">
-        <!-- <p>periciption </p> -->
-        {{ server.server}}  
+        <li draggable="true" @dragstart="onDragStart($event)">
+          <p>periciption</p>
+          <p>{{ server.server }}</p>
         </li>
       </ul>
     </footer>
@@ -57,18 +74,25 @@ let users = ref(userData);
 let draggedElement = ref("");
 let draggedElementValue = ref("");
 
-let alert=(e)=>{
-  // e.preventDefault();
-  alert('popup..')
+const showRemove = (e) => {
+  e.preventDefault();
+  let tragetElement = e.target.children[0];
+  tragetElement.classList.remove("d-none");
+};
 
-}
-    
-
+let remove = (e, parentIndex, childIndex) => {
+  e.preventDefault();
+  let tragetElement = e.target.closest("div");
+  let tragetCloseTag = e.target.closest("span");
+  users.value[Number(parentIndex)].VM[Number(childIndex)].server = "";
+  tragetCloseTag.classList.add("d-none");
+  tragetElement.classList.remove("server-active");
+};
 
 const onDragStart = (e) => {
   // e.preventDefault();
   draggedElement = e.target.closest("li");
-  draggedElementValue = e.target.closest("li").innerText;
+  draggedElementValue = e.target.closest("li").lastChild.innerText;
   // console.log("start", e.target.closest("li").innerText);
 };
 
@@ -92,63 +116,51 @@ const onDragDrop = (e) => {
   let currentIndex = droppedElement.getAttribute("data-current-index");
 
   if (droppedElement.innerText === "") {
-    users.value[Number(parentIndex)].VM[Number(currentIndex)].server =draggedElementValue;
+    users.value[Number(parentIndex)].VM[Number(currentIndex)].server =
+      draggedElementValue;
     droppedElement.classList.add("server-active");
-    // draggedElement.remove();
     droppedElement.classList.remove("service-dragover");
     droppedElement.classList.add("server-row");
+    // draggedElement.remove();
   }
 };
 </script>
 
-
 <style scoped>
-
 .header {
   display: flex;
   justify-content: space-between;
   height: 80vh;
-  /* background-color: rgb(211, 162, 162); */
-
 }
-/* .children{
-padding-top:20px;
-} */
+.d-none {
+  display: none;
+}
 .parent {
-  /* background-color: chartreuse; */
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   flex-direction: row;
 }
 .justify {
-  /* background-color: blueviolet; */
   justify-content: center;
   border: 3px solid green;
   margin-top: 3%;
   padding: 40px 0px;
   width: 84%;
-  /* height: 70vh; */
 }
 .content {
   margin-right: 5px;
   margin-left: 2px;
   margin-bottom: 100px;
   padding-bottom: 100px;
-  /* background-color: blueviolet; */
-  /* margin-top: 0px; */
-  /* padding-top: 40px; */
- 
-  /* background-color: cornsilk; */
 }
 .server div {
   height: 20px;
+  cursor: pointer;
 }
 .server-active {
-  /* background-color: rgb(212, 89, 41); */
   background-color: rgb(151, 234, 151);
   text-align: center;
-  /* padding: 5px 1px; */
 }
 .service-dragover {
   border: 1px dashed green;
@@ -156,18 +168,21 @@ padding-top:20px;
 .server-row {
   border: 1px dashed transparent;
   margin-bottom: 5px;
+  position: relative;
 }
-/* .service {
+.remove-Button {
+  position: absolute;
+  top: -17px;
+  right: 0px;
+}
+.service {
   background-color: rgb(151, 234, 151);
   text-align: center;
-} */
+}
 .vm {
-  /* margin-top: 2px; */
   background-color: gray;
-  padding: 10px 16px;
+  padding: 6px 16px;
   margin-top: 6px;
- 
-  /* margin-top: ; */
 }
 .hpc {
   background-color: rgb(240, 180, 102);
@@ -178,21 +193,16 @@ padding-top:20px;
 .container {
   border: 3px solid green;
   width: 200px;
-  /* padding-top: 0px; */
   margin-top: 42px;
+  overflow-y: auto;
 }
 .container-service {
   text-align: center;
 }
-/* .server-user {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-} */
+
 .server-wrapper {
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
 }
 .server-wrapper li {
   list-style: none;
@@ -201,10 +211,13 @@ padding-top:20px;
   padding: 6px 15px;
   width: 100px;
   height: auto;
-  /* margin-left: 0px; */
-  /* margin-bottom: 2px; */
   cursor: pointer;
 }
+/* .server-user {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+} */
 /* .service-right {
   background-color: rgb(242, 41, 19);
   text-align: center;
