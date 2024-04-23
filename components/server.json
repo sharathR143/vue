@@ -1,0 +1,42 @@
+[
+  {
+    "id": 0,
+    "server": "S1"
+  },
+  {
+    "id": 1,
+    "server": "S2"
+  },
+  {
+    "id": 2,
+    "server": "S3"
+  },
+  {
+    "id": 3,
+    "server": "S4"
+  },
+  {
+    "id": 4,
+    "server": "S5"
+  },
+  {
+    "id": 5,
+    "server": "S6"
+  },
+  {
+    "id": 6,
+    "server": "S7"
+  },
+  {
+    "id": 7,
+    "server": "S8"
+  },
+  {
+    "id": 8,
+    "server": "S9"
+  },
+  {
+    "id": 9,
+    "server": "S10"
+  }
+]

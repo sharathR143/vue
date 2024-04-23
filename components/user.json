@@ -1,0 +1,74 @@
+[
+  {
+    "id": 0,
+    "HPC": "HPC1",
+    "VM": [
+      { "name": "vm1", "server": "" },
+      { "name": "vm2", "server": "" },
+      { "name": "vm3", "server": "" },
+      { "name": "vm4", "server": "" },
+      { "name": "vm5", "server": "" },
+      { "name": "vm6", "server": "" }
+    ]
+  },
+  {
+    "id": 1,
+    "HPC": "HPC2",
+    "VM": [
+      { "name": "vm1", "server": "" },
+      { "name": "vm2", "server": "" },
+      { "name": "vm3", "server": "" },
+      { "name": "vm4", "server": "" },
+      { "name": "vm5", "server": "" },
+      { "name": "vm6", "server": "" }
+    ]
+  },
+  {
+    "id": 2,
+    "HPC": "HPC3",
+    "VM": [
+      { "name": "vm1", "server": "" },
+      { "name": "vm2", "server": "" },
+      { "name": "vm3", "server": "" },
+      { "name": "vm4", "server": "" },
+      { "name": "vm5", "server": "" },
+      { "name": "vm6", "server": "" }
+    ]
+  },
+  {
+    "id": 3,
+    "HPC": "HPC4",
+    "VM": [
+      { "name": "vm1", "server": "" },
+      { "name": "vm2", "server": "" },
+      { "name": "vm3", "server": "" },
+      { "name": "vm4", "server": "" },
+      { "name": "vm5", "server": "" },
+      { "name": "vm6", "server": "" }
+    ]
+  },
+  {
+    "id": 4,
+    "HPC": "HPC5",
+    "VM": [
+      { "name": "vm1", "server": "" },
+      { "name": "vm2", "server": "" },
+      { "name": "vm3", "server": "" },
+      { "name": "vm4", "server": "" },
+      { "name": "vm5", "server": "" },
+      { "name": "vm6", "server": "" }
+    ]
+  },
+  {
+    "id": 5,
+    "HPC": "HPC6",
+    "VM": [
+      { "name": "vm1", "server": "" },
+      { "name": "vm2", "server": "" },
+      { "name": "vm3", "server": "" },
+      { "name": "vm4", "server": "" },
+      { "name": "vm5", "server": "" },
+      { "name": "vm6", "server": "" }
+    ]
+  }
+]
