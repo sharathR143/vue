@@ -202,31 +202,32 @@ const onDragDrop = (e) => {
 .service {
   background-color: rgb(151, 234, 151);
   text-align: center;
+  /* margin-bottom: px; */
 }
 .vm {
   background-color: rgb(220, 209, 209);
   padding: 6px 23px;
   font-family:  Times, serif;
-  margin-top: 10px;
+  margin-top: 13px;
 }
 .hpc {
   background-color: rgb(240, 180, 102);
   text-align: center;
   padding:17px 15px;
-  margin-top: 68px;
+  margin-top: 73px;
   font-family:  Times, serif;
 }
 .container {
   border: 3px solid green;
   width: 180px;
-  background-color: blueviolet;
+  /* background-color: blueviolet; */
   margin-top: 42px;
   /* overflow-y: auto; */
   /* height: 600px; */
 }
 .container-service {
   text-align: center;
-  background-color: aqua;
+  /* background-color: aqua; */
 }
 
 .server-wrapper {
@@ -236,15 +237,16 @@ const onDragDrop = (e) => {
 .server-wrapper li {
   display: flex;
   justify-content:space-evenly;
-  background-color: rgb(208, 184, 158);
+  background-color: rgb(133, 204, 133);
   text-align: center;
-  margin-bottom: 40px;
-  width: 130px;
+  margin-bottom: 20px;
+  border-radius: 2px;
+  width: 140px;
   cursor: pointer;
   list-style: none;
 }
 .server-wrapper  p {
-  background-color: blueviolet; 
+  /* background-color: blueviolet;  */
   /* margin: 10px; */
 }
 
