@@ -3,12 +3,14 @@
                   <!-- service side -->
      <footer class="container">
       <h2 class="container-service">Service</h2>
+     <!-- <div class="container-div"> -->
       <ul class="server-wrapper" v-for="server in serverdata" :key="server.id">
-        <li draggable="true" @dragstart="onDragStart($event)">
-          <p>{{ server.name }}</p>
-          <p>{{ server.server }}</p>
+        <li draggable="true" @dragstart="onDragStart($event)" class="li">
+          <a>{{ server.name }}</a>
+          <a>{{ server.server }}</a>
         </li>
       </ul>
+     <!-- </div> -->
     </footer>
 
             <!-- HPC AND VM AND SERVICE SIDE -->
@@ -29,15 +31,15 @@
                 class="server-row"
                 :data-parent-index="i"
                 :data-current-index="j"
-                @click="vm.server !== '' ? showRemove($event) : '' "
-                @dblclick="vm.server !== '' ? showClosed($event) :'' "
+                @dblclick="vm.server !== '' ? showRemove($event) : '' "
+                @click="vm.server !== '' ? showClosed($event) :'' "
                
-                draggable="true"
+                draggable="false"
                 @dragover="onDragOver($event)"
                 @drop="onDragDrop($event)"
                 @dragleave="onDragLeave($event)"
               >
-               <!-- <h3> </h3> -->
+               
                {{ vm.server }}
                 <span
                   class="d-none remove-Button svg"
@@ -137,10 +139,11 @@ const onDragDrop = (e) => {
 </script>
 
 <style scoped>
+
 .header {
   display: flex;
   justify-content: space-between;
-  height: 80vh;
+  height: 84vh;
 }
 .d-none {
   display: none;
@@ -172,82 +175,105 @@ const onDragDrop = (e) => {
   justify-content: center;
   border: 3px solid green;
   margin-top: 3%;
-  padding: 20px 0px;
+  padding: 30px 0px;
   width: 87%;
 }
 .content {
   margin-right: 5px;
   margin-left: 2px;
-  margin-bottom: 50px;
-  margin-top: 10px;
-  padding-bottom: 100px;
+  margin-bottom: 80px;
+  margin-top: 20px;
 }
 .server div {
   height: 20px;
+  padding: 6px 0px;
 }
 .server-active {
-  background-color: rgb(151, 234, 151);
+  /* background-color: rgb(95, 172, 95); */
+  /* background-color: rgb(151, 212, 151); */
+  background-color: #e0aaff;
   text-align: center;
 }
 .service-dragover {
-  border: 1px dashed green;
+  border: 2px dashed green;
 }
 .server-row {
   border: 1px dashed transparent;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 550;
   position: relative;
-  padding: 5px 3px;
   cursor: pointer;
 }
 .service {
-  background-color: rgb(151, 234, 151);
   text-align: center;
-  /* margin-bottom: px; */
 }
 .vm {
-  background-color: rgb(220, 209, 209);
-  padding: 6px 23px;
+  /* background-color: rgb(220, 209, 209); */
+  background-color: rgb(195, 187, 187);
+  padding: 7px 23px;
   font-family:  Times, serif;
-  margin-top: 13px;
+  font-size: 18px;
+  font-weight: 550;
+  margin-top: 1px;
 }
 .hpc {
-  background-color: rgb(240, 180, 102);
+  /* background-color: rgb(240, 180, 102); */
+   background-color: rgb(241, 196, 128); 
   text-align: center;
   padding:17px 15px;
-  margin-top: 73px;
+  font-size: 18px;
+  font-weight: 550;
+  margin-top: 65px;
   font-family:  Times, serif;
 }
 .container {
   border: 3px solid green;
   width: 180px;
-  /* background-color: blueviolet; */
+  padding-right: 0px;
   margin-top: 42px;
+  /* background-color: rgb(191, 176, 206); */
   /* overflow-y: auto; */
   /* height: 600px; */
 }
-.container-service {
-  text-align: center;
-  /* background-color: aqua; */
-}
+
 
 .server-wrapper {
-  display: flex;
+   display: flex;
   flex-direction: column;
+  justify-content: start;
+
 }
-.server-wrapper li {
-  display: flex;
-  justify-content:space-evenly;
-  background-color: rgb(133, 204, 133);
+
+.container-service {
   text-align: center;
-  margin-bottom: 20px;
-  border-radius: 2px;
-  width: 140px;
+  font-size: 28px;
+}
+
+
+.li{
+  display: flex;
+  justify-content:space-between;
+  /* background-color: rgb(133, 204, 133); */
+ /* background-color: #d29cdc; */
+  /* background-color: #d29cdc; */
+  background-color: rgb(151, 212, 151);
+  /* background-color: #e0aaff; */
+  border-radius: 1px;
+  margin-top: 10px;
+  padding-top: 2px;
+  margin-left: 0px;
+  padding-left: 4px;
+  padding-right: 1px;
+  align-items: center;
+  width: 110px;
+  height: 42px;
   cursor: pointer;
   list-style: none;
 }
-.server-wrapper  p {
-  /* background-color: blueviolet;  */
-  /* margin: 10px; */
+
+.li a{
+  margin: 14px 5px;
 }
 
 </style>
