@@ -1,0 +1,642 @@
+Category	AddrHex	REG_NAME	RW	Type	Bit	Bit_name	Default	Description	Link	Data byte	Level	Mode	ModeExtension	Signed	배포	Optional
+CVI_A	0xCCCC_0200	_BASE_ADDRESS						jack.jang@lge.com		4	2				O	
+	0x0000	TOP_CTRL	RW				0x0008_0024	Top and Video port control		4	2	N			O	
+			RW		31	data_en_mode	0x00	"0 := Internal Hactive is made by hsync and de
+1  = Internal Hactive is made by de (Hoffset & Voffset should be 0x0000)"				N				
+			RW		30:28	bit_numbering_lsb2	0x00	"This function is just only valid when adc_bit_sel = '1'.
+000 := LSB 2bit is ""00""
+001  = LSB 2bit is ""01""
+010  = LSB 2bit is ""10""
+011  = LSB 2bit is ""11""
+100  = LSB 2bit is rotating on ""00"", ""01"", ""10"", ""11""
+101  = LSB 2bit is repeat own data(1 downto 0)"				N				
+			RW		27	g_port_swap	0x00	"This bit swaps the MSB and LSB.
+0 := normal bit order
+1  = inverse bit order"				N				
+			RW		26	b_port_swap	0x00	"This bit swaps the MSB and LSB.
+0 := normal bit order
+1  = inverse bit order"				N				
+			RW		25	r_port_swap	0x00	"This bit swaps the MSB and LSB.
+0 := normal bit order
+1  = inverse bit order"				N				
+			RW		24	br_port_swap	0x00	"This bit swaps the B and R port
+0 := normal
+1  = B and R port swap"				N				
+			RW		23	adc_bit_sel	0x00	"0 := 10bit data
+1  = 8 bit data (LSB 2bit's numbering is selected by bit_numbering_lsb2)"				N				
+			RW		22	adc_cut_direction	0x00	"this bit is just only valid when adc_bit_sel = '1'
+0 := MSB 8bit 
+1  = LSB 8bit"				N				
+			RW		21:20	manual_sync_polarity	0x00	"00 := H = negative sync(active_high), V = negative sync(active_high)
+01 =  H = negative sync(active_high), V = positive sync(active_low)
+10 =  H =  positive sync(active_low), V = negative sync(active_high)
+11 =  H =  positive sync(active_low), V =  positive sync(active_low)"				N				
+			RW		19	auto_sync_polarity	0x01	"0 = disable
+1 := enable"				N				
+			RW		17:14	data_in_sel	0x00	"0000 := HDMI_A
+0010  = HDMI_B
+0100  = HDMI_C
+0110  = HDMI_D
+1000  = CVD
+1001  = Component
+1010  = HDMI_E
+1100  = DSC
+1110  = FEC"				N				
+			RW		13:12	yc_delay_mode_g	0x00	"00 := bypass
+01  = 1 pixel delay
+10  = 2 pixel delay
+11  = 3 pixel delay"				N				
+			RW		11:10	yc_delay_mode_b	0x00	"00 := bypass
+01  = 1 pixel delay
+10  = 2 pixel delay
+11  = 3 pixel delay"				N				
+			RW		9:8	yc_delay_mode_r	0x00	"00 := bypass
+01  = 1 pixel delay
+10  = 2 pixel delay
+11  = 3 pixel delay"				N				
+			RW		7	aspect_ratio	0x00	"0 := 4:3
+1  = 16:9"				N				
+			RW		6	chroma_sampling	0x00	"Chroma up-sampling method when data_bit_mode = '0'
+0 := mean filter
+1  = pixel repetition"				N				
+			RW		5	reserved	0x00					N				
+			RW		4:3	auto_field_gen	0x00	"00 := use input hsync
+01  = use pseudo hsync1
+10  = use pseudo hsync2"		4	2	N			O	
+			RW		2:1	field_gen_mode	0x02	"00  = Auto field
+01  = Inverse of Auto field
+10 := Input field
+11  = Inverse of Input field"				N				
+			RW		0	scan_type	0x00	"0 := interlaced
+1  = progressive"				N				
+	0x0004	OFFSET_CTRL	RW				0x0026_0094	H and V offset Adjusting				N				
+			RW		28:16	offset_v	0x26	line number [Max 4095]				N				
+			RW		12:0	offset_h	0x94	pixel number [Max 4095]				N				
+	0x0008	SIZE_CTRL	RW				0x0438_0780	H and V size Adjusting				N				
+			RW		28:16	size_v	0x438	line number [Max 4095]				N				
+			RW		12:0	size_h	0x780	pixel number [Max 4095]				N				
+	0x000C	INT_SYNC_CTRL0	RW				0x0010_003E	Internal Re-shape Sync Parameter				N				
+			RW		25:16	res_hfp	0x010	For debug horizontal reshape front porch timing				N				
+			RW		9:0	res_hsync	0x03E	For debug horizontal reshape sync timing				N				
+	0x0010	INT_SYNC_CTRL1	RW				0x0001_0700	Internal Re-shape Sync Parameter		4	2	N			O	
+			RW		16	res_sync_sel	0x01	"For debug Reshape Sync Selection bit
+0  = use internal reshape sync (debug mode)
+1 := use input sync"				N				
+			RW		15	res_field_sel	0x00	"For debug reshape field selection
+0 := Top
+1  = Bottom"				N				
+			RW		14:13	res_field_add_line	0x00	adding line number				N				
+			RW		12:8	res_vsync	0x7	For Debug vertical reshape sync timing				N				
+			RW		4:0	res_vfp	0x0	For Debug vertical reshape front porch timing				N				
+	0x0014	CV_MASK_CTRL	RW				0x0100_0000	MASK signal for CVI				N				
+			RW		31	dolby_md_intr_clr	0x00	interrupt clear								
+			RW		30	dolby_md_intr_en	0x00	interrupt enable								
+			RW		29	dolby_crc_error_intr_clr	0x00	interrupt clear								
+			RW		28	dolby_crc_error_intr_en	0x00	interrupt enable								
+			RW		24	mask_memory	0x01	 0: disable,  1 : masking				N				
+			RW		23	mask_push	0x00	 0: disable,  1 : masking								
+			RW		22	mask_reset_push	0x00	 0: disable,  1 : masking								
+			RW		21	mask_pop	0x00	 0: disable,  1 : masking								
+			RW		20	mask_reset_pop	0x00	 0: disable,  1 : masking								
+			RW		19:18	hdr_tunnel_mode	0x00	" 0: bypass,   1 : tunneled mode,
+              3 : tunnel reverse mode"								
+			RW		17	dither_temporal_en	0x00	temporal dither enable								
+			RW		16	dither_en	0x00	"dither enable
+0 : dither block bypass (12 to 10 truncation)
+1 : dither path enable (12 to 10 dithering)"								
+			RW		15	reserved	0x00	0 : always on, 1 : only de (note! Component)								
+			RW		14	input_reverse	0x00	 0 : bypass,  1 : reverse								
+			RW		13:12	data_mux_g	0x00	"00 := G
+01  = B
+10  = R
+11  = 0"				N				
+			RW		11:10	data_mux_b	0x00	"00 := B
+01  = R
+10  = G
+11  = 0"								
+			RW		9:8	data_mux_r	0x00	"00 := R
+01  = G
+10  = B
+11  = 0"								
+			RW		7	mask_ext	0x00	 0: disable,  1 : masking				N				
+			RW		6	mask_ext_de	0x00	 0: disable,  1 : masking				N				
+			RW		5	mask_ext_vd	0x00	 0: disable,  1 : masking				N				
+			RW		4	mask_ext_hd	0x00	 0: disable,  1 : masking				N				
+			RW		3	mask_ext_field	0x00	 0: disable,  1 : masking				N				
+			RW		2	mask_ext_dr	0x00	 0: disable,  1 : masking				N				
+			RW		1	mask_ext_dg	0x00	 0: disable,  1 : masking				N				
+			RW		0	mask_ext_db	0x00	 0: disable,  1 : masking				N				
+	0x0018	CV_420_INCTRL	RW			reserved	0x0000_0000					N				
+			RW		24	hd_line_size_sel	0x00	0x0 = normal, 0x1 = average  (hd_line_size)								
+			RW		22	dolby_sdr_force	0x00	default 								
+			RW		21	dolby_vs_pol	0x00	default 								
+			RW		20	dolby_hs_pol	0x00	default 								
+			RW		18	dolby_422remap_disable	0x00	default 								
+			RW		17	dolby_422remap_manual	0x00	default 								
+			RW		16	dolby_video_format	0x00	"turn on  
+1: enable"								
+			RW		12	ctrl420_en	0x00	" 0 := disable
+ 1  = 420 to 444 enable"				N				
+			RW		10	yn1_swap	0x00	"0 := Yn1 : Cb 
+1  = Yn1 : Cr"								
+			RW		9	c_swap	0x00	"0 := no swap
+1  = Even and Odd output swap"								
+			RW		8	y_swap	0x00	"0 := no swap
+1  = Even and Odd output swap"								
+			RW		7:6	cr_delay	0x00	"00 := No delay
+01  = Pre delay ( not available )
+10  = Post delay"								
+			RW		5:4	cb_delay	0x00	"00 := No delay
+01  = Pre delay ( not available )
+10  = Post delay"								
+			RW		3:2	sub_line_420_mode	0x00	"00 := bypass
+01 :  even line pass, odd line disable
+10 :  even line pass, odd line disable, Cb/Cr repeated
+11 :  odd line pass, even line disable"				N				
+			RW		1:0	y_delay	0x00	"00 := No delay
+01  = Pre delay
+10  = Post delay"								
+	0x001C	CV_HDMI_MD_INFO	RO				0x0000_0000					N				
+			RO		31:0	dolby_md_info	0x00					N				
+	0x0020	HD_LINE_INFO	RO				0x0000_0000					N				
+			RO	D	31:0	tot_vsize	0x00	"avg_sel = 0 tot_vsize [27:0] h_avg = tot_vsize / vd_line_count_curr
+avg_sel = 1 min[15:0], max[15:0]"				N				
+	0x0024	CSC_CTRL0	RW				0x09D3_00FE	Color Space Conversion Control				N				
+			RW	D	30:16	csc_coefficient0	0x9D3	"default : 254
+Range -16384~16383"				N				
+			RW	D	14:0	csc_coefficient1	0xFE	"default : 2515
+Range -16384~16383"				N				
+	0x0028	CSC_CTRL1	RW				0x02EE_7A98	Color Space Conversion Control				N				
+			RW	D	30:16	csc_coefficient2	0x2EE	"default : 750
+Range -16384~16383"				N				
+			RW	D	14:0	csc_coefficient3	0x7A98	"default : -1384
+Range -16384~16383"				N				
+	0x002C	CSC_CTRL2	RW				0x0706_7E62	Color Space Conversion Control				N				
+			RW	D	30:16	csc_coefficient4	0x706	"default : 1798
+Range -16384~16383"				N				
+			RW	D	14:0	csc_coefficient5	0x7E62	"default : -414
+Range -16384~16383"				N				
+	0x0030	CSC_CTRL3	RW				0x799E_7F5C	Color Space Conversion Control				N				
+			RW	D	30:16	csc_coefficient6	0x799E	"default : -1634
+Range -16384~16383"				N				
+			RW	D	14:0	csc_coefficient7	0x7F5C	"default : -165
+Range -16384~16383"				N				
+	0x0034	CSC_CTRL4	RW				0x0706_0000	Color Space Conversion Control				N				
+			RW	D	30:16	csc_coefficient8	0x706	"default : 1798
+Range -16384~16383"				N				
+			RW	D	10:0	csc_offset0	0x00	"Pre add offset a
+Range -1024~1023"				N				
+	0x0038	CSC_CTRL5	RW				0x0000_0000	Color Space Conversion Control				N				
+			RW	D	26:16	csc_offset1	0x00	"Pre add offset b
+Range -1024~1023"				N				
+			RW	D	10:0	csc_offset2	0x00	"Pre add offset c
+Range -1024~1023"				N				
+	0x003C	CSC_CTRL6	RW				0x0040_0200	Color Space Conversion Control				N				
+			RW	D	26:16	csc_offset3	0x040	"Post add offset x
+Range -1024~1023"				N				
+			RW	D	10:0	csc_offset4	0x0200	"Post add offset y
+Range -1024~1023"				N				
+	0x0040	CSC_CTRL7	RW				0x0200_0200	Color Space Conversion Control				N				
+			RW	L/W	26:16	csc_offset5	0x0200	"Post add offset z
+Range -1024~1023"				N				
+			RW		2	reserved	0x00	"1  = PDP Electric board mode enable
+0 := disable"				N				
+			RW		1	csc_en	0x00	"1  = CSC enable
+0 := bypass CSC"				N				
+			RW	D	0	csc_coeff_load	0x00	this bit is auto cleared				N				
+	0x0044	MISC_CTRL	RW				0x0000_0000	Miscellaneous Control and Pattern Generation				N				
+			RW		31:28	reg_update_position	0x00	"register's update position after Vsync falling
+0~15 line"				N				
+			RW		27	reg_vcnt_reset	0x00	1 : internal vcount reset when offset/size is changing				N				
+			RW		26	field_detect_vris	0x00					N				
+			RW		25:24	yc_delay_mode_g	0x00	"00 := bypass
+01  = 2 pixel pull
+10  = 1 pixel pull
+11  = 1 pixel delay"				N				
+			RW		23:22	yc_delay_mode_b	0x00	"00 := bypass
+01  = 2 pixel pull
+10  = 1 pixel pull
+11  = 1 pixel delay"				N				
+			RW		21:20	yc_delay_mode_r	0x00	"00 := bypass
+01  = 2 pixel pull
+10  = 1 pixel pull
+11  = 1 pixel delay"				N				
+					19	avg_sel	0x00	"0 := V total size
+1  = max[15:0], min[15:0] hsize"								
+			RW		18	force_update	0x00	host force update				N				
+			RW		17	monitor_on	0x00	"output of cvi xsize is divided by below value.
+0 := default
+1  = divide2
+2  = divide4"				N				
+			RW		16	ha_gen	0x00	"when de_mode is enable, hactive is made during vactive low
+0 := dvi_hoffset read value apply
+1  = ha is not generated during vactive low"				N				
+			RW		15	field_edge	0x00	"when field detection in use of vsync's edge against hsync
+0:= falling edge of vsync
+1 = rising edge of vsync"				N				
+			RW		14	black_off	0x00	"fill it black screen for over offset
+0:= black screen
+1 = screen bypass"				N				
+			RW		13	sim_mode	0x00	"0:= normal
+1 = simulation mode only"				N				
+			RW		12	write_inhibit	0x00	"0 := normal
+1  = inhibit transfer CVI to Scaler"				N				
+			RW		11	black_sel	0x00	"selection of black 
+0 : YC black
+1 : RGB black"				N				
+			RW		10:9	field_fix_mode	0x00	"00 := bypass field
+01  = fix high
+10  = fix low
+11  = forcing field at every vsync"				N				
+			RW		8	reg_update_pulse	0x00	Vpulse generation at no vsync only for simulation (auto clear)				N				
+			RW		7:4	pattern_detail	0x00	"when pattern_type is 001
+0000  = white
+0001  = yellow
+0010  = cyan
+0011  = green
+0100  = magenta
+0101  = red
+0110 := blue
+0111  = black
+1000  = horizontal gradation
+1001  = vertical gradation
+1010  = color gradation
+1011  = Y/C gradation
+1100  = black and white for deinter test
+when pattern_type is 010 or 101
+0000  = 2 pixel width
+0001  = 4 pixel width
+0010  = 8 pixel width
+0011  = 16 pixel width
+0100  = 32 pixel width
+0101  = 64 pixel width
+0110 := 128 pixel width
+when pattern_type is 011 or 110
+0000  = 1 line height
+0001  = 2 line height
+0010  = 4 line height
+0011  = 8 line height
+0100  = 16 line height
+0101  = 32 line height
+0110 := 64 line height
+"				N				
+			RW		3	pattern_csc	0x00	"0 := Y/Cb/Cr color pattern gen
+1  = G/B/R color pattern gen"				N				
+			RW		2:0	pattern_type	0x00	"type of pattern
+000 := bypass
+001  = one color pattern
+010  = horizontal color bar pattern 
+011  = vertical color bar pattern
+(Note! the first pixel's color of vertical line is different)
+100  = cross hatch pattern
+101  = moving horizontal color bar pattern
+110  = moving vertical color bar pattern
+111  = moving cross hatch pattern"				N				
+	0x0048	OFFSET_READ	RO				0x0000_0000	H and V Offset Size Read				N				
+			RO		28:16	voffset_read	0x0	Vertical sync offset read  VBP (VA rising update)				N				
+			RO		12:0	hoffset_read	0x0	Horizontal sync offset read HBP (DE rising update)				N				
+	0x004C	MISC_CTRL1	RW			reserved	0x0000_0000					N				
+			RW		31:28	manual_addr	0x0	debug				N				
+			RW		27:24	manual_meb	0x0	debug				N				
+			RW		23	manual_m3	0x0	debug				N				
+			RW		22:20	manual_m2	0x0	debug				N				
+			RW		19:18	manual_m1	0x0	debug				N				
+			RW		17:16	manual_m0	0x0	debug				N				
+			RW		14:12	reg_clip_size	0x0	debug				N				
+			RW		10	active_gen_offset	0x0	"0 := protect offset value
+1  = mode against abnormal hsync input "				N				
+			RW		9	debug	0x00	"0 := fal_ext_vs
+1 =  fal_ext_ha"				N				
+			RW		8	fal_sel_v	0x00	"0 := fal_ext_vs
+1 =  fal_ext_ha"				N				
+			RW		7	sync_bypass	0x00	"0 := hs,vs,fd 's changing, => sync chaning
+1  = hs,vs,fd is not changing during no data period"				N				
+			RW		6	fd_bypass	0x00	"0 := CDC throughout sync
+1  = original delayed sync"				N				
+			RW		5	vs_bypass	0x00	"0 := CDC throughout sync
+1  = original delayed sync"				N				
+			RW		4	hs_bypass	0x00	"0 := CDC throughout sync
+1  = original delayed sync"				N				
+			RW		3:2	sub_line_mode	0x00	"00 := bypass
+01 :  even line pass, odd line disable
+11 :  odd line pass, even line disable"				N				
+			RW		1	cv_4p_mode	0x00	"when cv_4p_manual_en = 1
+0 := 1p
+1  = 4p"				N				
+			RW		0	cv_4p_manual_en	0x00	"0 := auto mode all mode is 4p except component(1p) and CVD(1p)
+1 : manual mode "				N				
+	0x0050	PRE3D_CTRL0	RW				0x021C_0000	PRE 3D-Formatter Control0				N				
+			RW		28:16	pre3d_active_line_num	0x21C	line number [Max 4095]				N				
+			RO		15	field	0x00									
+			RO		14	vd_fal_lr	0x00					N				
+			RO		13	vd_fal_field	0x00									
+			RO		12	va_fal_lr	0x00									
+			RO		11	va_fal_field	0x00									
+			RO		10	vd_ris_lr	0x00									
+			RO		9	vd_ris_field	0x00									
+			RO		8	va_ris_lr	0x00									
+			RO		7	va_ris_field	0x00									
+			RW		6	pre3d_field_bypass	0x00	"0 := internal generated field use
+1  = field bypass"				N				
+			RW		5	pre3d_mid_vsync_bypass	0x00	"0 := Mid Vsync Insert
+1  = Mid Vsync Bypass"				N				
+			RW		4	pre3d_frame_lr_mode	0x00	"0 := normal
+1  = inverse"				N				
+			RW		3	pre3d_field_mode	0x00	"0 := normal
+1  = inverse"				N				
+			RW		2:1	pre3d_sync_mode	0x00	"00 := bypass
+01  = Frame Packing (2 frame separate)
+10  = Frame Packing (4 frame separate)
+11  = Field Alternative"				N				
+			RW		0	pre3d_sync_enable	0x00	"0 := bypass
+1  = sync modify"				N				
+	0x0054	SIZE_STATUS7	RO				0x0000_0000					N				
+			RO		31:16	vd_front_porch	0x00	Front porch line / VFP (VS falling)				N				
+			RO		15:0	vd_line_count_curr	0x00	Line count of Total VD sync in one frame (current frame) / VTOTAL (VS falling)				N				
+	0x0058	SIZE_STATUS1	RO				0x0000_0000	Status Read of Pre Process 				N				
+			RO		31	v_offset_over	0x00	"v offset value exceed over vsync size, no more higher v offset value will not be applied. Detected vsize is smaller than voffset
+0 = Normal state
+1 = Abnormal state"				N				
+			RO		30	hoffset_over	0x00	"h offset value exceed over hsync size, no more higher h offset value will not be applied. Detected hsize is smaller than hoffset
+0 = Normal state
+1 = Abnormal state"				N				
+			RO		29:28	outfield_at_vactive_fall	0x00	accumulated out field signal detect at V active falling[LSB bit is current detected field polarity]				N				
+			RO		27:24	hsync_at_vsync_fall	0x00	accumulated hsync signal detect at V sync falling[LSB bit is current detected field polarity]				N				
+			RO		23:20	field_signal	0x00	accumluated field signal detect at V sync falling[LSB bit is current detected field polarity]				N				
+			RO		19	v_sync_polarity	0x00	"Detection of polarity of Vsync
+0 = positive sync(active_low)
+1 = negative sync(active_high)"				N				
+			RO		18	h_sync_polarity	0x00	"Detecion of poarity of Hsync
+0 = positive sync(active_low)
+1 = negative sync(active_high)"				N				
+			RO		17	sd_vsync_fault_flag_read	0x00	"0 = normal
+1 = when de signal is high, vsync is low"				N				
+			RO		16	sd_hsync_fault_flag_read	0x00	"0 = normal
+1 = when de signal is high, hsync is low"				N				
+			RO		15:8	sd_voffset_indurance_read	0x0	"This register is increasing and then maintain Max value, when previous and current frame's voffset is the same. At the normal condition this value should be 255
+[Max 255]"				N				
+			RO		7:0	sd_hoffset_indurance_read	0x0	"This register is increasing and then maintains Max value, when previous and current frame's hoffset is the same. At the normal condition this value should be 255
+[Max 255]"				N				
+	0x005C	SIZE_STATUS2	RO				0x0000_0000	Status Read of Pre Process 				N				
+			RO		28:16	de_line_count	0x0	de line count size of one frame / VA (VS falling)				N				
+			RO		12:0	de_line_size	0x0	"Pixel size of one line de / HA (at reg_pre_cnt)
+This line number is selected by line_count_sel register"				N				
+	0x0060	SIZE_STATUS3	RO				0x0000_0000	Status Read of Pre Process 				N				
+			RO		28:16	hd_line_size	0x0	Pixel size of Total HD sync in one line / HTOTAL				N				
+			RO		12:0	hd_sync_size	0x0	Pixel size of sync duration in HD sync / HSYN = hd_line_size - hd_sync_size				N				
+	0x0064	SIZE_STATUS4	RO				0x0000_0000	Status Read of Pre Process 				N				
+			RO		28:16	vd_line_count	0x0	Line count of Total VD sync in one frame (previous frame)				N				
+			RO		12:0	vd_sync_count	0x0	Line count of sync duration in VD sync / VSYN = vd_line_count_curr-vd_sync_count				N				
+	0x0068	PIX_SUM_CTRL0	RW				0x0200_0100	APL Control				N				
+			RW		31	debug_enable	0x00	"debug display enable
+0:= disable
+1 = enable"				N				
+			RW		30:29	field_selection	0x00	"field selection
+00:= each field detection
+01 = odd field detect only
+10 = even field detect only
+11 = alternative field "				N				
+			RW		28:16	end_pos_x	0x200	End position of X range				N				
+			RW		15	pix_sum_enable	0x00	"Pixel sum enable
+0:= disable
+1 = enable"				N				
+			RW		12:0	start_pos_x	0x100	Start position of X range				N				
+	0x006C	PIX_SUM_CTRL1	RW				0x0080_0040	APL Control				N				
+			RW		28:16	end_pos_y	0x80	End position of Y range				N				
+			RW		12:0	start_pos_y	0x40	Start position of Y range				N				
+	0x0070	PIX_SUM_CTRL2				reserved	0x3004_0100					N				
+			RW		31	fill_en	0x00	debug color fill enable				N				
+			RW		29:20	fill_color_g	0x300	debug color G								
+			RW		19:10	fill_color_b	0x100	debug color B								
+			RW		9:0	fill_color_r	0x100	debug color R								
+	0x0074	PIX_SUM_STATUS0	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_g0	0x0000_0000	G port pixel sum read				N				
+	0x0078	PIX_SUM_STATUS1	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_b0	0x0000_0000	B port pixel sum read				N				
+	0x007C	PIX_SUM_STATUS2	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_r0	0x0000_0000	R port pixel sum read				N				
+	0x0080	PIX_SUM_STATUS3	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_g1	0x0000_0000	G port pixel sum read				N				
+	0x0084	PIX_SUM_STATUS4	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_b1	0x0000_0000	B port pixel sum read				N				
+	0x0088	PIX_SUM_STATUS5	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_r1	0x0000_0000	R port pixel sum read				N				
+	0x008C	PIX_SUM_STATUS6	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_g2	0x0000_0000	G port pixel sum read				N				
+	0x0090	PIX_SUM_STATUS7	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_b2	0x0000_0000	B port pixel sum read				N				
+	0x0094	PIX_SUM_STATUS8	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_r2	0x0000_0000	R port pixel sum read				N				
+	0x0098	PIX_SUM_STATUS9	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_g3	0x0000_0000	G port pixel sum read				N				
+	0x009C	PIX_SUM_STATUSA	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_b3	0x0000_0000	B port pixel sum read				N				
+	0x00A0	PIX_SUM_STATUSB	RO				0x0000_0000					N				
+			RO		31:0	pix_sum_r3	0x0000_0000	R port pixel sum read				N				
+	0x00A4	SYNC_FIL_CTRL	RW				0x00C8_0000	Sync filter can compensate about  1~2clk's glitch or spike				N				
+			RW		28:16	reg_pre_count	0xC8	"actual line count when reading de_line_size
+default : 200th line"				N				
+			RW		7	field_counter_en	0x00	Counter enable for happened glitch or spike at Field				N				
+			RW		6	field_fil_en	0x00	Field filter enable				N				
+			RW		5	de_counter_en	0x00	Counter enable for happened glitch or spike at DE				N				
+			RW		4	de_fil_en	0x00	DE filter enable				N				
+			RW		3	vsync_counter_en	0x00	Counter enable for happened glitch or spike at Vsync				N				
+			RW		2	vsync_fil_en	0x00	Vsync filter enable				N				
+			RW		1	hsync_counter_en	0x00	Counter enable for happened glitch or spike at Hsync				N				
+			RW		0	hsync_fil_en	0x00	Hsync filter enable				N				
+	0x00A8	SYNC_FIL_STATUS	RO				0x0000_0000	Glitch or Spike number at Sync, This counter can be reset by disable of sync_counter_en				N				
+			RO		31:24	field_counter	0x0	"Glitch or Spike number at Field
+Max 255"				N				
+			RO		23:16	de_counter	0x0	"Glitch or Spike number at DE
+Max 255"				N				
+			RO		15:8	vsync_counter	0x0	"Glitch or Spike number at Vsync
+Max 255"				N				
+			RO		7:0	hsync_coutner	0x0	"Glitch or Spike number at Hsync
+Max 255"				N				
+	0x00AC	H_DOWN_CTRL0					0x0203_0020	8K to 4K down sizer				N				
+			RW		31	hdn_enable	0x00					N				
+			RW		30	hdn_y_reset	0x00					N				
+			RW		29:20	hdn_y_coef1	0x20									
+			RW		19:10	hdn_y_coef2	0xC0									
+			RW		9:0	hdn_y_coef3	0x20									
+	0x00B0	H_DOWN_CTRL1					0x0203_0020	max size 256				N				
+			RW		31	h_tunnel_en	0x00	for tunnel mode				N				
+			RW		30	hdn_c_reset	0x00	when 420 mode								
+			RW		29:20	hdn_c_coef1	0x20	0x0								
+			RW		19:10	hdn_c_coef2	0xC0	0x100								
+			RW		9:0	hdn_c_coef3	0x20	0x0				N				
+	0x00B4	V_DOWN_CTRL0				reserved	0x0000_0000					N				
+			Rsvd		31:0	reserved	0x00					N				
+	0x00B8	V_DOWN_CTRL1				reserved	0x0000_0000					N				
+			RW		31	i_down_420	0x00	"0 : 444 down mode
+1 : 420 down mode"				N				
+			Rsvd		30:0	reserved	0x00					N				
+	0x00BC	H_DOWN_CTRL2					0x0000_0000					N				
+			RW		19:10	hdn_y_coef0	0x00									
+			RW		9:0	hdn_y_coef4	0x00									
+	0x00C0	SIZE_DETECT_CTRL	RW				0xC012_8006	Size Detection Control				N				
+			RW		31:30	nosig_duration_vsync	0x03	"Duration of Vsync signal's absence to detect Vsync no signal
+00 := 21.17ms over (60Hz available)
+01  = 42.35ms over (30Hz available)
+10  = 84.70ms over (24Hz available) 
+11  = 169.41ms over"				N				
+			RW		29:28	nosig_duration_hsync	0x00	"Duration of Hsync signal's absence to detect Hsync no signal
+00 := 5.17us over
+01  = 10.34us over
+10  = 20.68us over
+11  = 41.37us over"				N				
+			RW		27:26	nosig_duration_de	0x00	"Duration of DE signal's absence to detect DE no signal
+00 := 5.17us over
+01  = 10.34us over
+10  = 20.68us over
+11  = 41.37us over"				N				
+					25:24	reserved	0x00	debug interrup enable, source clock selection(200/400Mhz)								
+			RW		23	sd_one_field	0x00	"when SD read size of two field, it restrict only one field.
+0 := 2 field read
+1  = 1 field read"				N				
+			RW		22	clk2048	0x0	1 : ext_clk_cnt = 2048				N				
+			RW		21:20	sd_novald_duration	0x01	"duration of no valid time, the smaller this value go to low, the faster no valid signal happen
+00  = 13896 unit h
+01 := 8192 unit h
+10  = 4096 unit h
+11  = 2048 unit h"				N				
+			RW		19	clk1024	0x0	1 : ext_clk_cnt = 1024				N				
+			RW		18:16	sd_frame_cnt	0x02	over 3 frame has to maintain same line number				N				
+			RW		15	sd_en	0x01	"Size detection enable
+0  = disable
+1 := enable"				N				
+			RW		14	intr_mask_h_cnahge	0x00	To fast change of Hsync				N				
+			RW		13	intr_mask_valid	0x00	Valid input interrupt mask				N				
+			RW		12	intr_mask_normal	0x00	Normal condition interrupt mask				N				
+			RW		11	intr_mask_vsync	0x00	Normal Vsync interrupt mask				N				
+			RW		10	intr_mask_hsync	0x00	Normal Hsync interrupt mask				N				
+			RW		9	intr_mask_de	0x00	Normal DE interrupt mask				N				
+			RW		8	intr_mask_invalid	0x00	Invalid input interrupt mask				N				
+			RW		7	intr_mask_abnormal	0x00	Abnormal condition interrupt mask				N				
+			RW		6	intrl_mask_novsync	0x00	Vsync interrupt mask				N				
+			RW		5	intr_mask_nohsync	0x00	Hsync interrupt mask				N				
+			RW		4	intr_mask_node	0x00	"DE interrupt mask
+0 := interrupt enable
+1  = interrupt disable (masking)"				N				
+			RW		3:2	sd_ext_range	0x01	"External Line range
+00  = 1
+01 := 2
+10  = 4
+11  = 8"				N				
+			RW		1:0	sd_vd_range	0x02	"VD line range
+00  = 8
+01  = 16
+10 := 32
+11  = 64"				N				
+	0x00C4	SIZE_DETECT_READ	RO				0x0000_0000	H and V Size Read				N				
+			RO		31:16	line_width_read	0x0	"width of one line (using fixed clock)
+pixel number = (read_data * input_source_clk_Mhz )/de_clk_396MHz"				N				
+			RO		15:0	line_num_read	0x0	"line number of one frame(field) (using fixed clock)
+Frame rate(Hz) = {1 / { (read_data * 2048 )} * de_clk_(396MHz)"				N				
+	0x00C8	SIZE_STATUS0	RO				0x0000_0000	Status Read of Size Detection Control				N				
+			RO		31:30	current_line_number_read_msb	0x00	current_line_number_read_msb				N				
+			RO		29:16	sd_line_num	0x00	line number of one frame(field) by de_clk, so this value may vary ±1 count => see the vd_line_count(SIZE_STATUS4)				N				
+			RO		15	source_valid	0x00	"0 = Source sync is not valid yet.
+1 = Source sync is valid"				N				
+			RO		14	vsync_signal_detect	0x00	"0 = No Vsync signal
+1 = Vsync signal is detected"				N				
+			RO		13	hsync_signal_detect	0x00	"0 = No Hsync signal
+1 = Hsync signal is detected"				N				
+			RO		12	de_signal_detect	0x00	"0 = No DE signal
+1 = DE signal is detected"				N				
+			RO		11:0	current_line_number_read	0x00	[Max 16383]				N				
+	0x00CC	SIZE_STATUS5	RO				0x0000_0000	Status Read of Size Detection Control				N				
+			RO		31:29	field_at_vactive_fall	0x00	accumluated out field signal detect at V active falling[LSB bit is current detected field polarity]				N				
+			RO		27:0	sd_2field_size	0x0000_0000	"size of two field by de_clk
+60hz => 16.67ms x 2field = 33.33ms / (1/396M) = 13,200,000
+30Hz => 26,400,000
+24Hz => 33,000,000"				N				
+	0x00D0	SIZE_STATUS6	RO				0x0000_0000	Status Read of Size Detection Control				N				
+			RO		31	vd_intr	0x00	"0 = Source sync is not valid yet.
+1 = Source sync is valid"				N				
+			RO		27:16	diff_ext_vcnt	0x00	different vcount between current ext_vcnt and previous ext_vcnt				N				
+			RO		15:0	diff_vd_vcnt	0x0	different vcount between current vd_vcnt and previous vd_vcnt				N				
+	0x00D4	SIZE_DETECT_CTRL1	RW/RO				0x0000_0000	abnormal flag make mask abnormal0_en ~ abnormal10_en				N				
+			RO		31	ext_clk_valid	0x00	valid of ext_clk (if no ext_clk state is over 165us then this signal goes to zero)				N				
+			RO		30:16	ext_clk_valid_count	0x0	"counter value of 512 ext clk measured by de_clk(400Mhz) 512*396/count 
+for ex : 297Mhz count 682"				N				
+			RO		15	abnormal7_flag	0x00	Vsync is not detected so that is abnormal				N				
+			RO		14	abnormal6_flag	0x00	Hsync is not detected so that is abnormal				N				
+			RO		13	abnormal5_flag	0x00	DE sync is not detected so that is abnormal				N				
+			RO		12	abnormal4_flag	0x00	Periodic Vsync is not detected so that is abnormal				N				
+			RO		11	abnormal3_flag	0x00	Low period of H sync is too short so that is abnormal				N				
+			RO		10	abnormal2_flag	0x00	High period of H sync is too short so that is abnormal				N				
+			RO		9	abnormal1_flag	0x00	Low period of V sync is too short so that is abnormal				N				
+			RO		8	abnormal0_flag	0x00	High period of V sync is too short so that is abnormal				N				
+			RW		7	abnormal7_en	0x00					N				
+			RW		6	abnormal6_en	0x00					N				
+			RW		5	abnormal5_en	0x00					N				
+			RW		4	abnormal4_en	0x00					N				
+			RW		3	abnormal3_en	0x00					N				
+			RW		2	abnormal2_en	0x00					N				
+			RW		1	abnormal1_en	0x00					N				
+			RW		0	abnormal0_en	0x00	"0 := do not apply to make abnormal flag
+1  = apply to make abnormal flag"				N				
+	0x00D8	SIZE_DETECT_CTRL2	RW				0x0301_0905	H/V abnormal sync width thrshold				N				
+			RW		31:24	abnormal_out_v	0x3	V Threshold width from abnormal to normal				N				
+			RW		23:16	abnormal_in_v	0x1	V Threshold width from normal to abnormal				N				
+			RW		15:8	abnormal_out_h	0x9	H Threshold width from abnormal to normal				N				
+			RW		7:0	abnormal_in_h	0x5	H Threshold width from normal to abnormal				N				
+	0x00DC	CV_OUT_MUX	RW				0x0000_0000	PSEUDO Sync Generation Control (DE CLK[198Mhz] is used at generation clock)				N				
+			RW		23	auto_pseudo_sync_en	0x00	Automatically Pseudo sync is selected to SMUX's input until Capture input's abnormal flag is disappeared.				N				
+			RW		21:20	c_valid_sel	0x00	"00 := Normal condition (cvalid = yvalid)
+01  = 420 mode (cvalid = 1/4 valid for 420)
+10  = 420 mode (cvalid = 1/2 valid for 420 , Even_odd mode)"								
+			RW		12	y_sel	0x00	"0 := Original Y select
+1  = Pseudo Y select"				N				
+			RW		10	cb_sel	0x00	"0 := Original Cb select
+1  = Pseudo Cb select"				N				
+			RW		8	cr_sel	0x00	"0 := Original Cr selec
+1  = Pseudo Cr select"				N				
+			RW		6	de_sel	0x00	"0 := Original sync select
+1  = Pseudo sync select"				N				
+			RW		5	vsync_sel	0x00	"0 := Original sync select
+1  = Pseudo sync select"				N				
+			RW		4	hsync_sel	0x00	"0 := Original sync select
+1  = Pseudo sync select"				N				
+			RW		3	field_sel	0x00	"0 := Original sync select
+1  = Pseudo sync select"				N				
+	0x00E0	PSEUDO_SYNC_CTRL1	RW				0x0210_02C0	Psuedo Sync Control0 for UHD				N				
+			RW		31:18	pseudo_hsync	0x16	size of hsync 22 (88/4 )				N				
+			RW		17:4	pseudo_hfp	0x2C	size of horizontal front porch 44 (176/4)				N				
+			RW		3	pseudo_cr_data_sel	0x00	"0 := Y,Cb increasing, Cr decreasing
+1  = designated value of pseudo_data of Cr"				N				
+			RW		2	pseudo_cb_data_sel	0x00	"0 := Y,Cb increasing, Cr decreasing
+1  = designated value of pseudo_data of Cb"				N				
+			RW		1	pseudo_y_data_sel	0x00	"0 := Y,Cb increasing, Cr decreasing
+1  = designated value of pseudo_data of Y"				N				
+			RW		0	pseudo_sync_ctrl_en	0x00	"1  = enable of pseudo sync ctrl
+0 := disable of pseudo sync ctrl"				N				
+	0x00E4	PSEUDO_SYNC_CTRL2	RW				0x2260_118F	Psuedo Sync Control1				N				
+			RW		31:18	pseudo_hn	0x44C	size of horizontal line 1100(4400/4)				N				
+			RW		17:4	pseudo_hblk	0x8C	size of horizontal blank 140(560/4)				N				
+			RW		3:0	pseudo_y	0x0F	MSB 4bit (default 960)				N				
+	0x00E8	PSEUDO_SYNC_CTRL3	RW				0x001C_0028	Psuedo Sync Control2				N				
+			RW		31:18	pseudo_vsync	0xA	line number of vertical sync				N				
+			RW		17:4	pseudo_vfp	0x8	line number of vertical front porch				N				
+			RW		3:0	pseudo_cb	0x08	MSB 4bit (default 512)				N				
+	0x00EC	PSEUDO_SYNC_CTRL4	RW				0x1194_02D8	Psuedo Sync Control3				N				
+			RW		31:18	pseudo_vn	0x8CA	line number of whole frame 2250				N				
+			RW		17:4	pseudo_vblk	0x5A	line number of vertical blank 90				N				
+			RW		3:0	pseudo_cr	0x08	MSB 4bit (default 512)				N				
+	0x00F0	SIZE_DETECT_CTRL3	RW				0x000A_4000					N				
+			RW		29:16	diff_hsize	0xA	To detect fast hsync change, minimum change range				N				
+			RW		15:4	interrupt_mask_count	0x0400	minimum mask count (5.3ms = 1024*1/198*mask_count)				N				
+			RW		0	interrupt_mask_method	0x00	"interrupt mask method
+0 : periodic mask
+1 : cascade mask"				N				
+	0x00F4	H_DOWN_CTRL3					0x0000_0000					N				
+			RW		19:10	hdn_c_coef0	0x00									
+			RW		9:0	hdn_c_coef4	0x00									
+	0x00F8	PRE3D_CTRL1	RW				0x0016_0017	PRE 3D-Formatter Control1				N				
+			RW		28:16	pre3d_active_space2_line_num	0x16	line number [Max 4095]				N				
+			RW		12:0	pre3d_active_space1_line_num	0x17	line number [Max 4095]				N				
+	0x00FC	PRE3D_CTRL2	RW				0x0005_0002	PRE 3D-Formatter Control1				N				
+			RW		28:16	pre3d_sync_line_num	0x5	line number [Max 4095]				N				
+			RW		12:0	pre3d_front_porch_line_num	0x2	line number [Max 4095]				N				
+[End]																
