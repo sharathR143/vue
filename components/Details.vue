@@ -90,10 +90,12 @@ const sendData = (event, data) => {
   console.log("click");
   propsData.value = data;
   console.log(data);
-  selected.value = !selected.value;
+  selected.value = true;
+  //   selected.value = !selected.value;
 };
 
 console.log("filteredParkingData", filteredParkingData);
+console.log("propsData", propsData.value);
 </script>
 
 <style scoped></style>
