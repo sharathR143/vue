@@ -22,9 +22,13 @@
            
               @click="sendData($event, filteredDrivingData,'driving')"
               @dblclick="unselectSection()">
-              <div v-if="showArrow && selectedSection === 'driving'" class="absolute top-[100px] left-[200px] transform -translate-x-1/2 text-4xl text-red-500 arrow-animation">
-              ↓
+
+              <div v-if="showArrow && selectedSection === 'driving'" class="absolute top-[60px] left-[260px]  3xl:left-[400px] transform -translate-x-1/2 text-4xl text-red-500 arrow-animation">
+                <img src="/img/Animation-arrow.gif" alt="Driving image" class="w-[100px] h-[100px] mx-2 mt-3  2xl:w-[100px] 3xl:w-[100px] 3xl:h-[100px]  rounded-lg 2xl:h-[100px]">  
+
+              
             </div>
+            <!-- ↓ -->
               <div class="mb-5 bg-gray-00">
                 <img src="/img/car.png" alt="Driving image" class="w-[260px] mx-2 mt-3  2xl:w-[280px] 3xl:w-[360px] 3xl:h-[250px]  rounded-lg h-[150px] 2xl:h-[200px]">  
                 <p class="flex justify-end mr-3  font-bold">Driving</p>
@@ -81,8 +85,10 @@
            :class="['bg-white ml-5 cursor-pointer', { 'border-4 border-red-500  rounded-lg ': selectedSection === 'parking' }]" 
             @click="sendData($event, filteredParkingData,'parking')" @dblclick="unselectSection()">
 
-            <div v-if="showArrow && selectedSection === 'parking'" class="absolute top-[100px] left-[600px]  transform -translate-x-1/2 text-4xl text-red-500 arrow-animation ">
-              <span class="animate-bounce w-6 h-6">↓</span>
+            <div v-if="showArrow && selectedSection === 'parking'" class="absolute   top-[70px] 1xl:left-[600px] 2xl:left-[650px] 3xl:left-[900px] transform -translate-x-1/2 text-4xl text-red-500 arrow-animation ">
+              <!-- <span class="animate-bounce w-6 h-6">↓</span> -->
+              <img src="/img/Animation-arrow.gif" alt="Driving image" class="mx-2 mt-3 w-[100px] h-[100px]   2xl:w-[100px] 2xl:h-[100px] 3xl:w-[100px] 3xl:h-[100px]  rounded-lg  ">  
+
             </div>
 
             <div class="mb-5 bg-green-00">
@@ -337,11 +343,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ... (previous styles) ... */
+
 
 .arrow-animation {
 
-  animation: fadeInOut 2s forwards;
+  animation: fadeInOut 4s forwards;
+  animation: bounceAnimation 4s infinite; 
+}
+
+@keyframes bounceAnimation {
+  0%, 100% {
+    transform: translateY(0); 
+  }
+  50% {
+    transform: translateY(-20px); 
+  }
 }
 
 @keyframes fadeInOut {
