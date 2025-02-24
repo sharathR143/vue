@@ -1,0 +1,180 @@
+npm install serialport readline axios
+
+
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+const axios = require("axios");
+
+const portPath = "/dev/ttyUSB0"; // Change based on your system
+const imageUrl = "https://example.com/raspberrypi.img"; // Replace with actual image URL
+const imagePath = "/tmp/raspberrypi.img"; // Where the image will be stored on Raspberry Pi
+const devicePath = "/dev/mmcblk0"; // SD card path on Raspberry Pi
+
+const port = new SerialPort(portPath, { baudRate: 115200 });
+const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+port.on("open", () => {
+    console.log("Serial connection opened. You can now send commands.");
+    process.stdin.on("data", (data) => {
+        sendCommand(data.toString().trim());
+    });
+});
+
+parser.on("data", (data) => {
+    console.log("Raspberry Pi:", data.trim());
+});
+
+function sendCommand(cmd) {
+    port.write(cmd + "\n", (err) => {
+        if (err) {
+            console.error("Error writing to serial:", err.message);
+        } else {
+            console.log(`Sent command: ${cmd}`);
+        }
+    });
+}
+
+// Automate downloading and flashing
+function downloadAndFlash() {
+    console.log("Starting download on Raspberry Pi...");
+    
+    sendCommand(`wget -O ${imagePath} ${imageUrl}`);
+    sendCommand(`echo "Download completed. Flashing now..."`);
+    sendCommand(`sudo dd if=${imagePath} of=${devicePath} bs=4M status=progress && sync`);
+    sendCommand(`echo "Flashing completed. Rebooting now..."`);
+    sendCommand(`sudo reboot`);
+}
+
+// Wait for user input
+console.log("Type 'flash' to download & flash the image.");
+process.stdin.on("data", (input) => {
+    if (input.toString().trim() === "flash") {
+        downloadAndFlash();
+    }
+});
+
+node remote-access.js
+//-------------------------------------------
+
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+
+const portPath = "/dev/ttyUSB0"; // Change if needed
+const baudRate = 115200;
+let imageUrl = ""; // User-provided image URL
+const imagePath = "/tmp/raspberrypi.img"; // Save location on Raspberry Pi
+const devicePath = "/dev/mmcblk0"; // SD card path
+
+const port = new SerialPort(portPath, { baudRate });
+const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+port.on("open", () => {
+    console.log("Connected to Raspberry Pi. Paste image URL to start flashing:");
+});
+
+// Listen for real-time Raspberry Pi output and display it
+parser.on("data", (data) => {
+    const message = data.trim();
+    console.log(`Raspberry Pi: ${message}`);
+
+    // If download is complete, start flashing
+    if (message.includes("100%") || message.includes("download complete")) {
+        console.log("Download completed. Starting flash...");
+        sendCommand(`sudo dd if=${imagePath} of=${devicePath} bs=4M status=progress && sync`);
+    }
+
+    // If flashing is complete, reboot the Raspberry Pi
+    if (message.includes("records out") || message.includes("sync complete")) {
+        console.log("Flashing complete. Rebooting Raspberry Pi...");
+        sendCommand(`sudo reboot`);
+    }
+});
+
+// Function to send a command over serial
+function sendCommand(cmd) {
+    port.write(cmd + "\n", (err) => {
+        if (err) console.error("Error sending command:", err.message);
+        else console.log(`Sent: ${cmd}`);
+    });
+}
+
+// Function to start downloading
+function startDownload() {
+    console.log("Starting image download on Raspberry Pi...");
+    sendCommand(`wget --progress=dot -O ${imagePath} ${imageUrl}`);
+}
+
+// Handle user input (paste URL and auto-start download)
+const readline = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+readline.question("Paste the image URL: ", (url) => {
+    imageUrl = url.trim();
+    console.log(`Image URL received: ${imageUrl}`);
+    startDownload();
+});
+
+node auto-flash.js
+
+
+//------------------------------------------------------------------------------
+
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+
+const portPath = "/dev/ttyUSB0"; // Change if needed
+const baudRate = 115200;
+const compressedImageUrl = "https://example.com/raspberrypi.wc.bc2"; // Replace with actual URL
+const compressedImagePath = "/tmp/raspberrypi.wc.bc2"; // Save location on Raspberry Pi
+const extractedImagePath = "/tmp/raspberrypi.img"; // Extracted image path
+const devicePath = "/dev/mmcblk0"; // SD card path
+
+const port = new SerialPort(portPath, { baudRate });
+const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+port.on("open", () => {
+    console.log("Connected to Raspberry Pi. Starting download...");
+    startDownload();
+});
+
+// Listen for Raspberry Pi output and display it
+parser.on("data", (data) => {
+    const message = data.trim();
+    console.log(`Raspberry Pi: ${message}`);
+
+    // Check if download is complete
+    if (message.includes("100%") || message.includes("download complete")) {
+        console.log("Download completed. Extracting the image...");
+        sendCommand(`bzip2 -d ${compressedImagePath}`);
+    }
+
+    // Check if extraction is complete
+    if (message.includes("not a bzip2 file") || message.includes("decompression complete")) {
+        console.log("Extraction completed. Starting flash...");
+        sendCommand(`sudo dd if=${extractedImagePath} of=${devicePath} bs=4M status=progress && sync`);
+    }
+
+    // If flashing is complete, reboot the Raspberry Pi
+    if (message.includes("records out") || message.includes("sync complete")) {
+        console.log("Flashing complete. Rebooting Raspberry Pi...");
+        sendCommand(`sudo reboot`);
+    }
+});
+
+// Function to send a command over serial
+function sendCommand(cmd) {
+    port.write(cmd + "\n", (err) => {
+        if (err) console.error("Error sending command:", err.message);
+        else console.log(`Sent: ${cmd}`);
+    });
+}
+
+// Function to start downloading
+function startDownload() {
+    sendCommand(`wget --progress=dot -O ${compressedImagePath} ${compressedImageUrl}`);
+}
+
+node auto-flash.js
+//--------------------------------------------------------------
