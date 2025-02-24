@@ -178,3 +178,66 @@ function startDownload() {
 
 node auto-flash.js
 //--------------------------------------------------------------
+
+
+updated 
+
+const path = require("path");
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+
+const portPath = "/dev/ttyUSB0"; // Change if needed
+const baudRate = 115200;
+const imageUrl = "https://example.com/custom-os.wc.bc2"; // Example URL
+
+// Extract dynamic filename from URL
+const filename = path.basename(imageUrl); // Example: "custom-os.wc.bc2"
+const compressedImagePath = `/tmp/${filename}`; // Example: "/tmp/custom-os.wc.bc2"
+
+// Change extension to .img dynamically
+const extractedImagePath = compressedImagePath.replace(/\.(wc\.)?bc2$/, ".img"); // Example: "/tmp/custom-os.img"
+
+const devicePath = "/dev/mmcblk0"; // SD card path
+
+const port = new SerialPort(portPath, { baudRate });
+const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+port.on("open", () => {
+    console.log(`Connected to Raspberry Pi. Downloading: ${filename}`);
+    startDownload();
+});
+
+// Listen for Raspberry Pi output and display it
+parser.on("data", (data) => {
+    const message = data.trim();
+    console.log(`Raspberry Pi: ${message}`);
+
+    if (message.includes("100%") || message.includes("download complete")) {
+        console.log(`Download completed. Extracting: ${filename}`);
+        sendCommand(`bzip2 -d ${compressedImagePath}`);
+    }
+
+    if (message.includes("decompression complete") || message.includes("not a bzip2 file")) {
+        console.log(`Extraction completed. Flashing: ${extractedImagePath}`);
+        sendCommand(`sudo dd if=${extractedImagePath} of=${devicePath} bs=4M status=progress && sync`);
+    }
+
+    if (message.includes("records out") || message.includes("sync complete")) {
+        console.log("Flashing complete. Rebooting Raspberry Pi...");
+        sendCommand(`sudo reboot`);
+    }
+});
+
+// Function to send a command over serial
+function sendCommand(cmd) {
+    port.write(cmd + "\n", (err) => {
+        if (err) console.error("Error sending command:", err.message);
+        else console.log(`Sent: ${cmd}`);
+    });
+}
+
+// Function to start downloading
+function startDownload() {
+    sendCommand(`wget --progress=dot -O ${compressedImagePath} ${imageUrl}`);
+}
+---------------------------------------------------------------------------
