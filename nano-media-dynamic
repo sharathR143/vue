@@ -1,0 +1,350 @@
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+const axios = require("axios");
+const path = require("path");
+const fs = require("fs");
+const { execSync } = require("child_process");
+
+// Automatically detect the first available serial port
+async function getSerialPort() {
+    try {
+        const ports = await SerialPort.list();
+        if (ports.length === 0) throw new Error("No serial ports found.");
+        return ports[0].path; // Use the first detected port
+    } catch (err) {
+        console.error("Error detecting serial port:", err);
+        process.exit(1);
+    }
+}
+
+// Image URL (user-provided)
+const imageUrl = "https://example.com/custom-os.wc.bc2"; // Replace with actual URL
+
+// Extract dynamic filename from URL
+const filename = path.basename(imageUrl); // Example: "custom-os.wc.bc2"
+const compressedImagePath = `/tmp/${filename}`; // Example: "/tmp/custom-os.wc.bc2"
+
+// Change extension to .img dynamically
+const extractedImagePath = compressedImagePath.replace(/\.(wc\.)?bc2$/, ".img"); // Example: "/tmp/custom-os.img"
+
+const devicePath = "/dev/mmcblk0"; // SD card path on Raspberry Pi
+
+// Start serial communication after detecting the port
+(async () => {
+    const portPath = await getSerialPort();
+    const port = new SerialPort(portPath, { baudRate: 115200 });
+    const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+    port.on("open", () => {
+        console.log(`Connected to Raspberry Pi via ${portPath}.`);
+        console.log("Type 'flash' to start downloading & flashing the image.");
+    });
+
+    // Display Raspberry Pi output in Linux PC terminal
+    parser.on("data", (data) => {
+        console.log("Raspberry Pi:", data.trim());
+
+        if (data.includes("100%") || data.includes("download complete")) {
+            console.log(`Download finished. Extracting: ${filename}`);
+            sendCommand(`bzip2 -d ${compressedImagePath}`);
+        }
+
+        if (data.includes("decompression complete") || data.includes("not a bzip2 file")) {
+            console.log(`Extraction finished. Flashing: ${extractedImagePath}`);
+            sendCommand(`sudo dd if=${extractedImagePath} of=${devicePath} bs=4M status=progress && sync`);
+        }
+
+        if (data.includes("records out") || data.includes("sync complete")) {
+            console.log("Flashing complete. Rebooting Raspberry Pi...");
+            sendCommand(`sudo reboot`);
+        }
+    });
+
+    function sendCommand(cmd) {
+        port.write(cmd + "\n", (err) => {
+            if (err) console.error("Error sending command:", err.message);
+            else console.log(`Sent: ${cmd}`);
+        });
+    }
+
+    // Automate downloading and flashing
+    function downloadAndFlash() {
+        console.log("Starting download on Raspberry Pi...");
+        sendCommand(`wget --progress=dot -O ${compressedImagePath} ${imageUrl}`);
+    }
+
+    // Wait for user input
+    process.stdin.on("data", (input) => {
+        if (input.toString().trim() === "flash") {
+            downloadAndFlash();
+        }
+    });
+})();
+
+node remote-access.js
+
+----------------------------------------------------------------------------------------------------------
+
+
+
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+const path = require("path");
+
+const portPath = "/dev/ttyUSB0"; // Change if needed
+const baudRate = 115200;
+let imageUrl = ""; // User-provided image URL
+let imagePath = ""; // Will be set dynamically
+const devicePath = "/dev/mmcblk0"; // SD card path
+
+const port = new SerialPort(portPath, { baudRate });
+const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+port.on("open", () => {
+    console.log("Connected to Raspberry Pi. Paste image URL to start flashing:");
+});
+
+// Listen for real-time Raspberry Pi output and display it
+parser.on("data", (data) => {
+    const message = data.trim();
+    console.log(`Raspberry Pi: ${message}`);
+
+    // If download is complete, start flashing
+    if (message.includes("100%") || message.includes("download complete")) {
+        console.log(`Download completed. Flashing: ${imagePath}`);
+        sendCommand(`sudo dd if=${imagePath} of=${devicePath} bs=4M status=progress && sync`);
+    }
+
+    // If flashing is complete, reboot the Raspberry Pi
+    if (message.includes("records out") || message.includes("sync complete")) {
+        console.log("Flashing complete. Rebooting Raspberry Pi...");
+        sendCommand(`sudo reboot`);
+    }
+});
+
+// Function to send a command over serial
+function sendCommand(cmd) {
+    port.write(cmd + "\n", (err) => {
+        if (err) console.error("Error sending command:", err.message);
+        else console.log(`Sent: ${cmd}`);
+    });
+}
+
+// Function to start downloading
+function startDownload() {
+    console.log(`Starting image download: ${imageUrl}`);
+
+    sendCommand(`wget --progress=dot -O ${imagePath} ${imageUrl}`);
+}
+
+// Handle user input (paste URL and auto-start download)
+const readline = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+readline.question("Paste the image URL: ", (url) => {
+    imageUrl = url.trim();
+
+    // Extract filename dynamically
+    let filename = path.basename(imageUrl); // Example: "raspbian-lite.zip"
+    
+    // Ensure correct file format (if compressed, rename to .img)
+    if (filename.endsWith(".zip") || filename.endsWith(".gz") || filename.endsWith(".bc2")) {
+        filename = filename.replace(/\.(zip|gz|bc2)$/, ".img"); // Example: "raspbian-lite.img"
+    }
+
+    // Set dynamic path
+    imagePath = `/tmp/${filename}`;
+    
+    console.log(`Image will be saved as: ${imagePath}`);
+    startDownload();
+});
+
+node auto-flash.js
+
+-------------------------------------------------------------------
+
+
+
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+const path = require("path");
+
+const portPath = "/dev/ttyUSB0"; // Change if needed
+const baudRate = 115200;
+let compressedImageUrl = ""; // User-provided image URL
+let compressedImagePath = ""; // Will be set dynamically
+let extractedImagePath = ""; // Will be set dynamically
+const devicePath = "/dev/mmcblk0"; // SD card path
+
+const port = new SerialPort(portPath, { baudRate });
+const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+port.on("open", () => {
+    console.log("Connected to Raspberry Pi. Paste compressed image URL to start:");
+});
+
+// Listen for Raspberry Pi output and display it
+parser.on("data", (data) => {
+    const message = data.trim();
+    console.log(`Raspberry Pi: ${message}`);
+
+    // Check if download is complete
+    if (message.includes("100%") || message.includes("download complete")) {
+        console.log(`Download completed: ${compressedImagePath}`);
+        console.log("Extracting the image...");
+
+        // Determine extraction command based on file type
+        let extractCommand = "";
+        if (compressedImagePath.endsWith(".bz2")) {
+            extractCommand = `bzip2 -d ${compressedImagePath}`;
+        } else if (compressedImagePath.endsWith(".gz")) {
+            extractCommand = `gunzip ${compressedImagePath}`;
+        } else if (compressedImagePath.endsWith(".zip")) {
+            extractCommand = `unzip -o ${compressedImagePath} -d /tmp/`;
+        }
+
+        if (extractCommand) {
+            sendCommand(extractCommand);
+        } else {
+            console.log("No extraction needed, proceeding to flash...");
+            sendCommand(`sudo dd if=${extractedImagePath} of=${devicePath} bs=4M status=progress && sync`);
+        }
+    }
+
+    // Check if extraction is complete
+    if (message.includes("decompression complete") || message.includes("extracted") || message.includes("inflating")) {
+        console.log("Extraction completed. Starting flash...");
+        sendCommand(`sudo dd if=${extractedImagePath} of=${devicePath} bs=4M status=progress && sync`);
+    }
+
+    // If flashing is complete, reboot the Raspberry Pi
+    if (message.includes("records out") || message.includes("sync complete")) {
+        console.log("Flashing complete. Rebooting Raspberry Pi...");
+        sendCommand(`sudo reboot`);
+    }
+});
+
+// Function to send a command over serial
+function sendCommand(cmd) {
+    port.write(cmd + "\n", (err) => {
+        if (err) console.error("Error sending command:", err.message);
+        else console.log(`Sent: ${cmd}`);
+    });
+}
+
+// Function to start downloading
+function startDownload() {
+    console.log(`Starting image download: ${compressedImageUrl}`);
+
+    sendCommand(`wget --progress=dot -O ${compressedImagePath} ${compressedImageUrl}`);
+}
+
+// Handle user input (paste URL and auto-start download)
+const readline = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+readline.question("Paste the compressed image URL: ", (url) => {
+    compressedImageUrl = url.trim();
+
+    // Extract filename dynamically
+    let filename = path.basename(compressedImageUrl); // Example: "raspbian-lite.bz2"
+
+    // Set compressed image path
+    compressedImagePath = `/tmp/${filename}`;
+
+    // Generate extracted image path
+    extractedImagePath = compressedImagePath.replace(/\.(bz2|gz|zip)$/, ".img");
+
+    console.log(`Compressed Image Path: ${compressedImagePath}`);
+    console.log(`Extracted Image Path: ${extractedImagePath}`);
+    
+    startDownload();
+});
+
+
+node auto-flash.js
+
+
+-----------------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------
+
+
+updated 
+-------------
+
+const path = require("path");
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+
+const portPath = "/dev/ttyUSB0"; // Change if needed
+const baudRate = 115200;
+const imageUrl = "https://example.com/custom-os.wc.bc2"; // Example URL
+
+// Extract dynamic filename from URL
+const filename = path.basename(imageUrl); // Example: "custom-os.wc.bc2"
+const compressedImagePath = `/tmp/${filename}`; // Example: "/tmp/custom-os.wc.bc2"
+
+// Change extension to .img dynamically
+const extractedImagePath = compressedImagePath.replace(/\.(wc\.)?bc2$/, ".img"); // Example: "/tmp/custom-os.img"
+
+const devicePath = "/dev/mmcblk0"; // SD card path
+
+const port = new SerialPort(portPath, { baudRate });
+const parser = port.pipe(new Readline({ delimiter: "\n" }));
+
+port.on("open", () => {
+    console.log(`Connected to Raspberry Pi. Downloading: ${filename}`);
+    startDownload();
+});
+
+// Listen for Raspberry Pi output and display it
+parser.on("data", (data) => {
+    const message = data.trim();
+    console.log(`Raspberry Pi: ${message}`);
+
+    if (message.includes("100%") || message.includes("download complete")) {
+        console.log(`Download completed. Extracting: ${filename}`);
+        sendCommand(`bzip2 -d ${compressedImagePath}`);
+    }
+
+    if (message.includes("decompression complete") || message.includes("not a bzip2 file")) {
+        console.log(`Extraction completed. Flashing: ${extractedImagePath}`);
+        sendCommand(`sudo dd if=${extractedImagePath} of=${devicePath} bs=4M status=progress && sync`);
+    }
+
+    if (message.includes("records out") || message.includes("sync complete")) {
+        console.log("Flashing complete. Rebooting Raspberry Pi...");
+        sendCommand(`sudo reboot`);
+    }
+});
+
+// Function to send a command over serial
+function sendCommand(cmd) {
+    port.write(cmd + "\n", (err) => {
+        if (err) console.error("Error sending command:", err.message);
+        else console.log(`Sent: ${cmd}`);
+    });
+}
+
+// Function to start downloading
+function startDownload() {
+    sendCommand(`wget --progress=dot -O ${compressedImagePath} ${imageUrl}`);
+}
+
+
+
+
+
+
+
+
+
+
+
